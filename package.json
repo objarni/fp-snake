@@ -1,0 +1,16 @@
+{
+  "name": "fp-snake",
+  "version": "1.0.0",
+  "description": "Snake clone built in Elm",
+  "scripts": {
+    "serve": "parcel src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "elm": "elm"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@parcel/transformer-elm": "^2.3.2",
+    "elm": "^0.19.1-5",
+    "parcel": "^2.3.2"
+  }
+}
