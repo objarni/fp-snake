@@ -6,6 +6,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (id, style, tabindex)
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
+import Snake exposing (Coordinate, Direction(..), move)
 import Task
 import Time
 
@@ -23,22 +24,11 @@ type alias Flags =
     {}
 
 
-type alias Coordinate =
-    { x : Int, y : Int }
-
-
 type alias Model =
     { count : Int
     , head : Coordinate
     , bodyParts : List Coordinate
     }
-
-
-type Direction
-    = Left
-    | Right
-    | Up
-    | Down
 
 
 type Msg
@@ -62,22 +52,6 @@ init _ =
       }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
-
-
-move : Direction -> Coordinate -> Coordinate
-move dir { x, y } =
-    case dir of
-        Left ->
-            { x = x - 1, y = y }
-
-        Right ->
-            { x = x + 1, y = y }
-
-        Up ->
-            { x = x, y = y - 1 }
-
-        Down ->
-            { x = x, y = y + 1 }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
