@@ -2,7 +2,7 @@ module Snake exposing (..)
 
 
 type alias Snake =
-    { direction : Direction
+    { heading : Direction
     , head : Coordinate
     , body : List Coordinate
     }
@@ -20,4 +20,12 @@ type alias Coordinate =
 
 
 snakeStep : Snake -> Snake
-snakeStep s = s
+snakeStep { heading, head, body } =
+    let
+        newHead =
+            { x = head.x + 1, y = head.y }
+    in
+    { heading = heading
+    , head = newHead
+    , body = [ head ]
+    }

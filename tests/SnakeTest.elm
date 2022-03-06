@@ -11,12 +11,12 @@ suite =
             \_ ->
                 let
                     snakeBefore =
-                        { direction=Right
+                        { heading=Right
                         , head={x=1, y=2}
                         , body=[{x=0, y=2}]
                         }
                     expected =
-                        { direction=Right
+                        { heading=Right
                         , head={x=2, y=2}
                         , body=[{x=1, y=2}]
                         }
