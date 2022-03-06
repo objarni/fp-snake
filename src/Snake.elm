@@ -23,9 +23,25 @@ snakeStep : Snake -> Snake
 snakeStep { heading, head, body } =
     let
         newHead =
-            { x = head.x + 1, y = head.y }
+            move heading head
     in
     { heading = heading
     , head = newHead
     , body = [ head ]
     }
+
+
+move : Direction -> Coordinate -> Coordinate
+move dir { x, y } =
+    case dir of
+        Left ->
+            { x = x - 1, y = y }
+
+        Right ->
+            { x = x + 1, y = y }
+
+        Up ->
+            { x = x, y = y - 1 }
+
+        Down ->
+            { x = x, y = y + 1 }
