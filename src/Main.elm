@@ -7,6 +7,7 @@ import Html.Attributes exposing (id, style, tabindex)
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
 import Task
+import Time
 
 
 main =
@@ -44,12 +45,13 @@ type Msg
     = Increment
     | Decrement
     | Steer Direction
+    | Tick Time.Posix
     | NoOp
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Time.every 1000 Tick
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -84,14 +86,17 @@ update msg model =
         Increment ->
             ( model, Cmd.none )
 
-        Steer dir ->
-            ( { model | head = move dir model.head }, Cmd.none )
-
         Decrement ->
             ( { model | count = model.count - 1 }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
+
+        Steer dir ->
+            ( { model | head = move dir model.head }, Cmd.none )
+
+        Tick _ ->
+            ( {model|count = model.count + 1}, Cmd.none )
 
 
 viewCell color { x, y } =
@@ -115,7 +120,7 @@ view model =
     div
         [ style "height" "500px"
         , style "width" "500px"
-        , style "background-color" "black"
+        , style "background-color" "gray"
         , style "position" "relative"
         , tabindex 0
         , id "app-div"
@@ -126,4 +131,4 @@ view model =
             , ( ArrowDown, Steer Down )
             ]
         ]
-        ([ drawHead model.head ] ++ List.map (viewCell "white") model.bodyParts)
+        ([ Html.text (String.fromInt model.count), drawHead model.head ] ++ List.map (viewCell "white") model.bodyParts)
