@@ -126,6 +126,6 @@ view model =
             ]
         ]
         (Html.text (String.fromInt model.count)
-            :: viewCell "orange" snakeHead
-            :: List.map (viewCell "white") snakeBody
+            :: viewCell "lightgray" snakeHead
+            :: List.map (viewCell "pink") snakeBody
         )
