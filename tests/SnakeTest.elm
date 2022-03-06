@@ -37,4 +37,19 @@ suite =
                                   }
                           in
                           Expect.equal expected (snakeStep snakeBefore)
+        , test "3 cell snake test one step up" <|
+                      \_ ->
+                          let
+                              snakeBefore =
+                                  { heading=Up
+                                  , head={x=3, y=2}
+                                  , body=[{x=2, y=2}, {x=1, y=2}]
+                                  }
+                              expected =
+                                  { heading=Up
+                                  , head={x=3, y=1}
+                                  , body=[{x=3, y=2}, {x=2, y=2}]
+                                  }
+                          in
+                          Expect.equal expected (snakeStep snakeBefore)
         ]

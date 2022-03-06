@@ -24,10 +24,11 @@ snakeStep { heading, head, body } =
     let
         newHead =
             move heading head
+        bodyLength = List.length body
     in
     { heading = heading
     , head = newHead
-    , body = [ head ]
+    , body = [ head ] ++ (List.take (bodyLength - 1) body)
     }
 
 
