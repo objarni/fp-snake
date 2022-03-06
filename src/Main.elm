@@ -6,7 +6,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (id, style, tabindex)
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
-import Snake exposing (Coordinate, Direction(..), move)
+import Snake exposing (Coordinate, Direction(..), Snake, snakeStep)
 import Task
 import Time
 
@@ -26,8 +26,7 @@ type alias Flags =
 
 type alias Model =
     { count : Int
-    , head : Coordinate
-    , bodyParts : List Coordinate
+    , snake : Snake
     }
 
 
@@ -44,11 +43,17 @@ subscriptions _ =
     Time.every 1000 Tick
 
 
+initialSnake =
+    { heading = Right
+    , head = { x = 10, y = 10 }
+    , body = [ { x = 9, y = 10 }, { x = 8, y = 10 } ]
+    }
+
+
 init : Flags -> ( Model, Cmd Msg )
 init _ =
     ( { count = 0
-      , head = { x = 10, y = 10 }
-      , bodyParts = [ { x = 8, y = 10 }, { x = 9, y = 10 } ]
+      , snake = initialSnake
       }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
@@ -67,10 +72,22 @@ update msg model =
             ( model, Cmd.none )
 
         Steer dir ->
-            ( { model | head = move dir model.head }, Cmd.none )
+            let
+                oldSnake =
+                    model.snake
+
+                newSnake =
+                    { oldSnake | heading = dir }
+            in
+            ( { model | snake = newSnake }, Cmd.none )
 
         Tick _ ->
-            ( {model|count = model.count + 1}, Cmd.none )
+            ( { model
+                | count = model.count + 1
+                , snake = snakeStep model.snake
+              }
+            , Cmd.none
+            )
 
 
 viewCell color { x, y } =
@@ -85,12 +102,15 @@ viewCell color { x, y } =
         [ text " " ]
 
 
-drawHead =
-    viewCell "orange"
-
-
 view : Model -> Html Msg
 view model =
+    let
+        snakeHead =
+            model.snake.head
+
+        snakeBody =
+            model.snake.body
+    in
     div
         [ style "height" "500px"
         , style "width" "500px"
@@ -105,4 +125,7 @@ view model =
             , ( ArrowDown, Steer Down )
             ]
         ]
-        ([ Html.text (String.fromInt model.count), drawHead model.head ] ++ List.map (viewCell "white") model.bodyParts)
+        (Html.text (String.fromInt model.count)
+            :: viewCell "orange" snakeHead
+            :: List.map (viewCell "white") snakeBody
+        )
