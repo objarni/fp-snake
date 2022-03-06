@@ -27,7 +27,12 @@ type alias Model =
   , bodyParts: List Coord
   }
 
-type Msg = Increment | Decrement | NoOp
+type Direction = Left | Right | Up | Down
+
+type Msg = Increment
+         | Decrement
+         | Steer Direction
+         | NoOp
 
 
 subscriptions : Model -> Sub Msg
@@ -41,15 +46,20 @@ init flags = ({ count=0
   , bodyParts=[{x=8, y=10}, {x=9, y=10}]
   }, Dom.focus "app-div" |> Task.attempt (always NoOp) )
 
+move : Direction -> Coord -> Coord
+move dir ({x, y} as coord) = case dir of
+  Left -> {x=x-1, y=y}
+  Right -> {x=x+1, y=y}
+  Up -> {x=x, y=y-1}
+  Down -> {x=x, y=y+1}
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    Increment ->
-      ({ model
-      | count=model.count + 2
-      , head={x=model.head.x+1,y=model.head.y}
-      }, Cmd.none)
+    Increment -> (model, Cmd.none)
+
+    Steer dir ->
+      ({ model | head=move dir model.head}, Cmd.none)
 
     Decrement ->
       ({model | count=model.count - 1}, Cmd.none)
@@ -78,6 +88,11 @@ view model =
       , style "position" "relative"
       , tabindex 0
       , id "app-div"
-      , Keyboard.on Keyboard.Keydown [(Escape, Increment)]
+      , Keyboard.on Keyboard.Keydown
+        [ (ArrowLeft, Steer Left)
+        , (ArrowRight, Steer Right)
+        , (ArrowUp, Steer Up)
+        , (ArrowDown, Steer Down)
+        ]
       ]
     ([ drawHead model.head] ++ List.map (viewCell "white") model.bodyParts )
