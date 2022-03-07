@@ -24,7 +24,9 @@ type alias Flags =
     {}
 
 
-type alias Model =
+type Model = Game GameData
+
+type alias GameData =
     { count : Int
     , snake : Snake
     }
@@ -52,7 +54,7 @@ initialSnake =
 
 init : Flags -> ( Model, Cmd Msg )
 init _ =
-    ( { count = 0
+    ( Game { count = 0
       , snake = initialSnake
       }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
@@ -60,16 +62,16 @@ init _ =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ((Game model) as m) =
     case msg of
         Increment ->
-            ( model, Cmd.none )
+            ( Game model, Cmd.none )
 
         Decrement ->
-            ( { model | count = model.count - 1 }, Cmd.none )
+            ( Game { model | count = model.count - 1 }, Cmd.none )
 
         NoOp ->
-            ( model, Cmd.none )
+            ( m, Cmd.none )
 
         Steer dir ->
             let
@@ -79,10 +81,10 @@ update msg model =
                 newSnake =
                     { oldSnake | heading = dir }
             in
-            ( { model | snake = newSnake }, Cmd.none )
+            ( Game { model | snake = newSnake }, Cmd.none )
 
         Tick _ ->
-            ( { model
+            ( Game { model
                 | count = model.count + 1
                 , snake = snakeStep model.snake
               }
@@ -103,7 +105,7 @@ viewCell color { x, y } =
 
 
 view : Model -> Html Msg
-view model =
+view (Game model) =
     let
         snakeHead =
             model.snake.head
