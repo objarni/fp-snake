@@ -26,6 +26,7 @@ type alias Flags =
 
 type Model
     = Game GameData
+    | GameOver
 
 
 type alias GameData =
@@ -63,29 +64,37 @@ init _ =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ((Game model) as m) =
-    case msg of
-        NoOp ->
-            ( m, Cmd.none )
+update msg model =
+    case model of
+        GameOver ->
+            ( model, Cmd.none )
 
-        Steer dir ->
-            let
-                oldSnake =
-                    model.snake
+        Game gameData ->
+            case msg of
+                NoOp ->
+                    ( model, Cmd.none )
 
-                newSnake =
-                    { oldSnake | heading = dir }
-            in
-            ( Game { model | snake = newSnake }, Cmd.none )
+                Steer dir ->
+                    let
+                        oldSnake =
+                            gameData.snake
 
-        Tick _ ->
-            ( Game
-                { model
-                    | count = model.count + 1
-                    , snake = snakeStep model.snake
-                }
-            , Cmd.none
-            )
+                        newSnake =
+                            { oldSnake | heading = dir }
+                    in
+                    ( Game { gameData | snake = newSnake }, Cmd.none )
+
+                Tick _ ->
+                    let
+                        newSnake = snakeStep gameData.snake
+                    in
+                        ( Game
+                            { gameData
+                                | count = gameData.count + 1
+                                , snake = newSnake
+                            }
+                        , Cmd.none
+                        )
 
 
 viewCell color { x, y } =
@@ -126,3 +135,6 @@ view model =
                     :: viewCell "lightgray" gameData.snake.head
                     :: List.map (viewCell "pink") gameData.snake.body
                 )
+
+        GameOver ->
+            div enclosingDivAttribs [ Html.text "Game Over" ]
