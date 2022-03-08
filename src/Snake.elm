@@ -18,6 +18,7 @@ type Direction
 type alias Coordinate =
     { x : Int, y : Int }
 
+boxSize = 50
 
 snakeStep : Snake -> Snake
 snakeStep { heading, head, body } =
@@ -31,6 +32,12 @@ snakeStep { heading, head, body } =
     , body = [ head ] ++ (List.take (bodyLength - 1) body)
     }
 
+snakeInBox : Snake -> Bool
+snakeInBox snake =
+    let
+        xInside = 0 <= (snake.head.x) && (snake.head.x < boxSize)
+    in
+    xInside
 
 move : Direction -> Coordinate -> Coordinate
 move dir { x, y } =

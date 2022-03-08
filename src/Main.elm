@@ -6,7 +6,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (id, style, tabindex)
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
-import Snake exposing (Coordinate, Direction(..), Snake, snakeStep)
+import Snake exposing (Coordinate, Direction(..), Snake, snakeInBox, snakeStep)
 import Task
 import Time
 
@@ -43,7 +43,7 @@ type Msg
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Time.every 1000 Tick
+    Time.every 300 Tick
 
 
 initialSnake =
@@ -86,15 +86,20 @@ update msg model =
 
                 Tick _ ->
                     let
-                        newSnake = snakeStep gameData.snake
+                        newSnake =
+                            snakeStep gameData.snake
                     in
-                        ( Game
+                    ( if snakeInBox newSnake then
+                        Game
                             { gameData
                                 | count = gameData.count + 1
                                 , snake = newSnake
                             }
-                        , Cmd.none
-                        )
+
+                      else
+                        GameOver
+                    , Cmd.none
+                    )
 
 
 viewCell color { x, y } =
@@ -137,4 +142,6 @@ view model =
                 )
 
         GameOver ->
-            div enclosingDivAttribs [ Html.text "Game Over" ]
+            div enclosingDivAttribs
+                [ div [ style "font-size" "50pt" ] [ Html.text "Game Over" ]
+                ]
