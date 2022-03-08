@@ -32,6 +32,7 @@ type Model
 type alias GameData =
     { count : Int
     , snake : Snake
+    , munchieAt : Coordinate
     }
 
 
@@ -58,6 +59,7 @@ init _ =
     ( Game
         { count = 0
         , snake = initialSnake
+        , munchieAt = {x=5, y=5}
         }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
@@ -138,6 +140,7 @@ view model =
                 enclosingDivAttribs
                 (Html.text (String.fromInt gameData.count)
                     :: viewCell "lightgray" gameData.snake.head
+                    :: viewCell "yellow" gameData.munchieAt
                     :: List.map (viewCell "pink") gameData.snake.body
                 )
 
