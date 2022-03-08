@@ -33,9 +33,7 @@ type alias GameData =
 
 
 type Msg
-    = Increment
-    | Decrement
-    | Steer Direction
+    = Steer Direction
     | Tick Time.Posix
     | NoOp
 
@@ -64,12 +62,6 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg ((Game model) as m) =
     case msg of
-        Increment ->
-            ( Game model, Cmd.none )
-
-        Decrement ->
-            ( Game { model | count = model.count - 1 }, Cmd.none )
-
         NoOp ->
             ( m, Cmd.none )
 
