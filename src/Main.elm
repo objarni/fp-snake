@@ -24,7 +24,9 @@ type alias Flags =
     {}
 
 
-type Model = Game GameData
+type Model
+    = Game GameData
+
 
 type alias GameData =
     { count : Int
@@ -52,9 +54,10 @@ initialSnake =
 
 init : Flags -> ( Model, Cmd Msg )
 init _ =
-    ( Game { count = 0
-      , snake = initialSnake
-      }
+    ( Game
+        { count = 0
+        , snake = initialSnake
+        }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
 
@@ -76,10 +79,11 @@ update msg ((Game model) as m) =
             ( Game { model | snake = newSnake }, Cmd.none )
 
         Tick _ ->
-            ( Game { model
-                | count = model.count + 1
-                , snake = snakeStep model.snake
-              }
+            ( Game
+                { model
+                    | count = model.count + 1
+                    , snake = snakeStep model.snake
+                }
             , Cmd.none
             )
 
@@ -97,29 +101,28 @@ viewCell color { x, y } =
 
 
 view : Model -> Html Msg
-view (Game model) =
+view model =
     let
-        snakeHead =
-            model.snake.head
-
-        snakeBody =
-            model.snake.body
-    in
-    div
-        [ style "height" "500px"
-        , style "width" "500px"
-        , style "background-color" "gray"
-        , style "position" "relative"
-        , tabindex 0
-        , id "app-div"
-        , Keyboard.on Keyboard.Keydown
-            [ ( ArrowLeft, Steer Left )
-            , ( ArrowRight, Steer Right )
-            , ( ArrowUp, Steer Up )
-            , ( ArrowDown, Steer Down )
+        enclosingDivAttribs =
+            [ style "height" "500px"
+            , style "width" "500px"
+            , style "background-color" "gray"
+            , style "position" "relative"
+            , tabindex 0
+            , id "app-div"
+            , Keyboard.on Keyboard.Keydown
+                [ ( ArrowLeft, Steer Left )
+                , ( ArrowRight, Steer Right )
+                , ( ArrowUp, Steer Up )
+                , ( ArrowDown, Steer Down )
+                ]
             ]
-        ]
-        (Html.text (String.fromInt model.count)
-            :: viewCell "lightgray" snakeHead
-            :: List.map (viewCell "pink") snakeBody
-        )
+    in
+    case model of
+        Game gameData ->
+            div
+                enclosingDivAttribs
+                (Html.text (String.fromInt gameData.count)
+                    :: viewCell "lightgray" gameData.snake.head
+                    :: List.map (viewCell "pink") gameData.snake.body
+                )
