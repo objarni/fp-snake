@@ -89,7 +89,7 @@ update msg model =
                 Tick _ ->
                     let
                         newSnake =
-                            snakeStep gameData.snake
+                            snakeStep gameData.snake gameData.munchieAt
                     in
                     ( if snakeInBox newSnake then
                         Game
@@ -139,8 +139,8 @@ view model =
             div
                 enclosingDivAttribs
                 (Html.text (String.fromInt gameData.count)
-                    :: viewCell "lightgray" gameData.snake.head
                     :: viewCell "yellow" gameData.munchieAt
+                    :: viewCell "lightblue" gameData.snake.head
                     :: List.map (viewCell "pink") gameData.snake.body
                 )
 

@@ -18,26 +18,43 @@ type Direction
 type alias Coordinate =
     { x : Int, y : Int }
 
-boxSize = 50
 
-snakeStep : Snake -> Snake
-snakeStep { heading, head, body } =
+boxSize =
+    50
+
+
+snakeStep : Snake -> Coordinate -> Snake
+snakeStep { heading, head, body } munchieAt =
     let
         newHead =
             move heading head
-        bodyLength = List.length body
+
+        bodyLength =
+            List.length body
+
+        tailCell =
+            List.drop (bodyLength - 1) body
+
+        bodyWithoutTailCell =
+            List.take (bodyLength - 1) body
+
+        newBody = [ head ] ++ bodyWithoutTailCell
+        additionalExtra = if newHead == munchieAt then tailCell ++ tailCell ++ tailCell else []
     in
     { heading = heading
     , head = newHead
-    , body = [ head ] ++ (List.take (bodyLength - 1) body)
+    , body = newBody ++ additionalExtra
     }
+
 
 snakeInBox : Snake -> Bool
 snakeInBox snake =
     let
-        xInside = 0 <= (snake.head.x) && (snake.head.x < boxSize)
+        xInside =
+            0 <= snake.head.x && (snake.head.x < boxSize)
     in
     xInside
+
 
 move : Direction -> Coordinate -> Coordinate
 move dir { x, y } =
