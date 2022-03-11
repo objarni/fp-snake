@@ -90,6 +90,7 @@ suite =
                     in
                     Expect.equal expected (snakeStep snakeBefore { x = 100, y = 100 })
             -- TODO: test is hard to express/get right. Rewrite this test as a printer/approval style?
+            -- - Tried this, but I don't know how to write multi line strings in Elm!
             --, test "eating a munchie means 3 more body cells at end" <|
             --    \_ ->
             --        let
