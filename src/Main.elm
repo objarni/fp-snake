@@ -6,7 +6,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (id, style, tabindex)
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
-import Snake exposing (Coordinate, Direction(..), Snake, snakeInBox, snakeStep)
+import Snake exposing (Coordinate, Direction(..), Snake, boxSize, snakeInBox, snakeStep)
 import Task
 import Time
 
@@ -128,9 +128,11 @@ viewCell color { x, y } =
 view : Model -> Html Msg
 view model =
     let
+        sceneSizePx = String.fromInt (10 * boxSize) ++ "px"
+
         enclosingDivAttribs =
-            [ style "height" "500px"
-            , style "width" "500px"
+            [ style "height" sceneSizePx
+            , style "width" sceneSizePx
             , style "background-color" "gray"
             , style "position" "relative"
             , tabindex 0
