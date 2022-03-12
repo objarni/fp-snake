@@ -43,8 +43,17 @@ type Msg
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Time.every 300 Tick
+subscriptions model =
+    case model of
+        GameOver ->
+            Time.every 300 Tick
+
+        Game gameData ->
+            let
+                msDelay =
+                    1000 // (List.length gameData.snake.body)
+            in
+            Time.every (toFloat msDelay) Tick
 
 
 initialSnake =
@@ -59,7 +68,7 @@ init _ =
     ( Game
         { count = 0
         , snake = initialSnake
-        , munchieAt = {x=5, y=5}
+        , munchieAt = { x = 5, y = 5 }
         }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
