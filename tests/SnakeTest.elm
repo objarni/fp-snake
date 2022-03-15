@@ -1,6 +1,6 @@
 module SnakeTest exposing (..)
 
-import Expect exposing (Expectation)
+import Expect
 import Snake exposing (Direction(..), snakeStep)
 import Test exposing (..)
 

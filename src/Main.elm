@@ -40,6 +40,7 @@ type Msg
     = Steer Direction
     | Tick Time.Posix
     | NoOp
+    | MouseClick
 
 
 subscriptions : Model -> Sub Msg
@@ -51,7 +52,7 @@ subscriptions model =
         Game gameData ->
             let
                 msDelay =
-                    1000 // (List.length gameData.snake.body)
+                    1000 // List.length gameData.snake.body
             in
             Time.every (toFloat msDelay) Tick
 
@@ -79,7 +80,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case model of
         GameOver ->
-            ( model, Cmd.none )
+            case msg of
+                MouseClick ->
+                    init {}
+
+                _ ->
+                    (GameOver, Cmd.none)
 
         Game gameData ->
             case msg of
@@ -95,6 +101,9 @@ update msg model =
                             { oldSnake | heading = dir }
                     in
                     ( Game { gameData | snake = newSnake }, Cmd.none )
+
+                MouseClick ->
+                    ( model, Cmd.none )
 
                 Tick _ ->
                     let
@@ -129,7 +138,8 @@ viewCell color { x, y } =
 view : Model -> Html Msg
 view model =
     let
-        sceneSizePx = String.fromInt (10 * boxSize) ++ "px"
+        sceneSizePx =
+            String.fromInt (10 * boxSize) ++ "px"
 
         enclosingDivAttribs =
             [ style "height" sceneSizePx
@@ -143,6 +153,7 @@ view model =
                 , ( ArrowRight, Steer Right )
                 , ( ArrowUp, Steer Up )
                 , ( ArrowDown, Steer Down )
+                , ( Spacebar, MouseClick)
                 ]
             ]
     in
