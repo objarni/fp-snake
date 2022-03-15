@@ -56,6 +56,7 @@ subscriptions model =
             Time.every (toFloat msDelay) Tick
 
 
+initialSnake : Snake
 initialSnake =
     { heading = Right
     , head = { x = 10, y = 10 }
