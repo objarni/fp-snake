@@ -33,13 +33,13 @@ snakeStep { heading, head, body } munchieAt =
             List.length body
 
         tailCell =
-            List.drop (bodyLength - 1) body
+            List.drop (bodyLength - 2) body |> List.head |> Maybe.withDefault {x=0, y=0}
 
         bodyWithoutTailCell =
             List.take (bodyLength - 1) body
 
         newBody = head :: bodyWithoutTailCell
-        additionalExtra = if newHead == munchieAt then tailCell ++ tailCell ++ tailCell else []
+        additionalExtra = if newHead == munchieAt then [tailCell, tailCell, tailCell] else []
     in
     { heading = heading
     , head = newHead
