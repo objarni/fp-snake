@@ -38,7 +38,7 @@ snakeStep { heading, head, body } munchieAt =
         bodyWithoutTailCell =
             List.take (bodyLength - 1) body
 
-        newBody = [ head ] ++ bodyWithoutTailCell
+        newBody = head :: bodyWithoutTailCell
         additionalExtra = if newHead == munchieAt then tailCell ++ tailCell ++ tailCell else []
     in
     { heading = heading
