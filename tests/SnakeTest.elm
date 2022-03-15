@@ -91,33 +91,33 @@ suite =
                     Expect.equal expected (snakeStep snakeBefore { x = 100, y = 100 })
             -- TODO: test is hard to express/get right. Rewrite this test as a printer/approval style?
             -- - Tried this, but I don't know how to write multi line strings in Elm!
-            --, test "eating a munchie means 3 more body cells at end" <|
-            --    \_ ->
-            --        let
-            --            munchiePosition =
-            --                { x = 3, y = 1 }
-            --
-            --            snakeBefore =
-            --                { heading = Up
-            --                , head = { x = 3, y = 2 }
-            --                , body =
-            --                    [ { x = 2, y = 2 }
-            --                    , { x = 1, y = 2 }
-            --                    ]
-            --                }
-            --
-            --            expected =
-            --                { heading = Up
-            --                , head = munchiePosition
-            --                , body =
-            --                    [ { x = 3, y = 2 }
-            --                    , { x = 2, y = 2 }
-            --                    , { x = 2, y = 2 }
-            --                    , { x = 2, y = 2 }
-            --                    , { x = 2, y = 2 }
-            --                    ]
-            --                }
-            --        in
-            --        Expect.equal expected (snakeStep snakeBefore munchiePosition)
+            , test "eating a munchie means 3 more body cells at end" <|
+               \_ ->
+                   let
+                       munchiePosition =
+                           { x = 3, y = 1 }
+            
+                       snakeBefore =
+                           { heading = Up
+                           , head = { x = 3, y = 2 }
+                           , body =
+                               [ { x = 2, y = 2 }
+                               , { x = 1, y = 2 }
+                               ]
+                           }
+            
+                       expected =
+                           { heading = Up
+                           , head = munchiePosition
+                           , body =
+                               [ { x = 3, y = 2 }
+                               , { x = 2, y = 2 }
+                               , { x = 2, y = 2 }
+                               , { x = 2, y = 2 }
+                               , { x = 2, y = 2 }
+                               ]
+                           }
+                   in
+                   Expect.equal expected (snakeStep snakeBefore munchiePosition)
             ]
         ]
