@@ -111,12 +111,15 @@ update msg model =
                     ( Game { gameData | snake = newSnake }, Cmd.none )
 
                 MouseClick ->
-                    ( model, play (E.bool True))
+                    ( model, Cmd.none )
 
                 Tick _ ->
                     let
                         newSnake =
                             snakeStep gameData.snake gameData.munchieAt
+
+                        hadMunchie =
+                            List.length newSnake.body > List.length gameData.snake.body
                     in
                     ( if snakeInBox newSnake then
                         Game
@@ -127,7 +130,11 @@ update msg model =
 
                       else
                         GameOver
-                    , Cmd.none
+                    , if hadMunchie then
+                        play (E.null)
+
+                      else
+                        Cmd.none
                     )
 
 
