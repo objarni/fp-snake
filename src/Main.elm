@@ -1,14 +1,22 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (id, style, tabindex)
+import Json.Encode as E
 import Keyboard exposing (Key(..))
 import Keyboard.Events as Keyboard
 import Snake exposing (Coordinate, Direction(..), Snake, boxSize, snakeInBox, snakeStep)
 import Task
 import Time
+
+
+
+-- Port to play sound
+
+
+port play : E.Value -> Cmd msg
 
 
 main =
@@ -85,7 +93,7 @@ update msg model =
                     init {}
 
                 _ ->
-                    (GameOver, Cmd.none)
+                    ( GameOver, Cmd.none )
 
         Game gameData ->
             case msg of
@@ -103,7 +111,7 @@ update msg model =
                     ( Game { gameData | snake = newSnake }, Cmd.none )
 
                 MouseClick ->
-                    ( model, Cmd.none )
+                    ( model, play (E.bool True))
 
                 Tick _ ->
                     let
@@ -153,7 +161,7 @@ view model =
                 , ( ArrowRight, Steer Right )
                 , ( ArrowUp, Steer Up )
                 , ( ArrowDown, Steer Down )
-                , ( Spacebar, MouseClick)
+                , ( Spacebar, MouseClick )
                 ]
             ]
     in
