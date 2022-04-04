@@ -41,6 +41,7 @@ type alias GameData =
     { count : Int
     , snake : Snake
     , munchieAt : Coordinate
+    , score : Int
     }
 
 
@@ -79,6 +80,7 @@ init _ =
         { count = 0
         , snake = initialSnake
         , munchieAt = { x = 5, y = 5 }
+        , score = 0
         }
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
@@ -118,20 +120,21 @@ update msg model =
                         newSnake =
                             snakeStep gameData.snake gameData.munchieAt
 
-                        hadMunchie =
-                            List.length newSnake.body > List.length gameData.snake.body
+                        lengthDiff = List.length newSnake.body - List.length gameData.snake.body
+                        hadMunchie = lengthDiff > 0
                     in
                     ( if snakeInBox newSnake then
                         Game
                             { gameData
                                 | count = gameData.count + 1
                                 , snake = newSnake
+                                , score =gameData.score + lengthDiff
                             }
 
                       else
                         GameOver
                     , if hadMunchie then
-                        play (E.null)
+                        play E.null
 
                       else
                         Cmd.none
@@ -174,13 +177,20 @@ view model =
     in
     case model of
         Game gameData ->
-            div
-                enclosingDivAttribs
-                (Html.text (String.fromInt gameData.count)
-                    :: viewCell "yellow" gameData.munchieAt
-                    :: viewCell "lightblue" gameData.snake.head
-                    :: List.map (viewCell "pink") gameData.snake.body
-                )
+            let
+                scoreString =
+                    String.fromInt gameData.score
+            in
+            div []
+                [ Html.text ("Score: " ++ scoreString ++ " points")
+                , div
+                    enclosingDivAttribs
+                    (Html.text (String.fromInt gameData.count)
+                        :: viewCell "yellow" gameData.munchieAt
+                        :: viewCell "lightblue" gameData.snake.head
+                        :: List.map (viewCell "pink") gameData.snake.body
+                    )
+                ]
 
         GameOver ->
             div enclosingDivAttribs
