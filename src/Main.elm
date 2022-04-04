@@ -120,15 +120,18 @@ update msg model =
                         newSnake =
                             snakeStep gameData.snake gameData.munchieAt
 
-                        lengthDiff = List.length newSnake.body - List.length gameData.snake.body
-                        hadMunchie = lengthDiff > 0
+                        lengthDiff =
+                            List.length newSnake.body - List.length gameData.snake.body
+
+                        hadMunchie =
+                            lengthDiff > 0
                     in
                     ( if snakeInBox newSnake then
                         Game
                             { gameData
                                 | count = gameData.count + 1
                                 , snake = newSnake
-                                , score =gameData.score + lengthDiff
+                                , score = gameData.score + lengthDiff
                             }
 
                       else
