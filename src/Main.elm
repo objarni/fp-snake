@@ -156,7 +156,7 @@ update msg model =
                         play E.null
 
                       else
-                        Cmd.none
+                        Dom.focus "app-div" |> Task.attempt (always NoOp)
                     )
 
 
@@ -191,13 +191,18 @@ view model =
                 , ( ArrowUp, Steer Up )
                 , ( ArrowDown, Steer Down )
                 , ( Spacebar, MouseClick )
+                , ( Keyboard.Character "I", Steer Up )
+                , ( Keyboard.Character "K", Steer Down )
+                , ( Keyboard.Character "J", Steer Left )
+                , ( Keyboard.Character "L", Steer Right )
+                , ( Keyboard.Character "A", MouseClick )
                 ]
             ]
     in
     case model of
         SplashScreen ->
             div enclosingDivAttribs
-                [ div [ style "font-size" "50pt" ] [ Html.text "fp snake" ]
+                [ div [ style "font-size" "40pt" ] [ Html.text "fp snake" ]
                 ]
 
         Game gameData ->
