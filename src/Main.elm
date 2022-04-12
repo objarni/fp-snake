@@ -35,6 +35,7 @@ type alias Flags =
 type Model
     = Game GameData
     | GameOver
+    | SplashScreen
 
 
 type alias GameData =
@@ -55,6 +56,9 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model of
+        SplashScreen ->
+            Sub.none
+
         GameOver ->
             Time.every 300 Tick
 
@@ -74,14 +78,18 @@ initialSnake =
     }
 
 
-init : Flags -> ( Model, Cmd Msg )
-init _ =
-    ( Game
+initGameData =
+    Game
         { count = 0
         , snake = initialSnake
         , munchieAt = { x = 5, y = 5 }
         , score = 0
         }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init _ =
+    ( SplashScreen
     , Dom.focus "app-div" |> Task.attempt (always NoOp)
     )
 
@@ -89,6 +97,14 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case model of
+        SplashScreen ->
+            case msg of
+                MouseClick ->
+                    ( initGameData, Cmd.none )
+
+                _ ->
+                    ( SplashScreen, Cmd.none )
+
         GameOver ->
             case msg of
                 MouseClick ->
@@ -179,6 +195,11 @@ view model =
             ]
     in
     case model of
+        SplashScreen ->
+            div enclosingDivAttribs
+                [ div [ style "font-size" "50pt" ] [ Html.text "fp snake" ]
+                ]
+
         Game gameData ->
             let
                 scoreString =
